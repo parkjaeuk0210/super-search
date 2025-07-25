@@ -1,68 +1,144 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'wouter';
-import { Search } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Logo } from '@/components/Logo';
+import { NeuralSearchInput } from '@/components/NeuralSearchInput';
+import { NeuralBackground } from '@/components/NeuralBackground';
 
 export function Home() {
-  const [query, setQuery] = useState('');
   const [, setLocation] = useLocation();
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(query.trim())}`);
-    }
+  const handleSearch = (query: string) => {
+    setLocation(`/search?q=${encodeURIComponent(query)}`);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-      <ThemeToggle />
-      <div className="w-full max-w-3xl px-4 animate-fade-in">
-        <div className="flex flex-col items-center mb-8">
-          <Logo className="mb-6" />
-          <h1 className="text-2xl lg:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-200">
-            What do you want to know?
-          </h1>
-        </div>
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Neural Background */}
+      <NeuralBackground />
+      
+      {/* Theme Toggle */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="absolute top-4 right-4 z-20"
+      >
+        <ThemeToggle />
+      </motion.div>
+      
+      {/* Main Content */}
+      <div className="relative z-10 w-full max-w-4xl px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-center mb-8"
+        >
+          {/* Logo with glow effect */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+              delay: 0.2 
+            }}
+            className="relative mb-8"
+          >
+            <div className="absolute inset-0 blur-3xl bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full" />
+            <Logo className="relative" />
+          </motion.div>
+          
+          {/* Title with gradient animation */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-3xl lg:text-5xl font-bold text-center mb-3"
+          >
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 animate-gradient bg-300%">
+              What do you want to know?
+            </span>
+          </motion.h1>
+          
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-gray-600 dark:text-gray-400 text-lg"
+          >
+            AI-powered search with real-time web intelligence
+          </motion.p>
+        </motion.div>
         
-        <form onSubmit={handleSearch} className="w-full">
-          <div className="relative group">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask anything..."
-              className="w-full px-6 py-4 text-lg rounded-full border border-gray-200 
-                       focus:border-google-blue focus:ring-4 focus:ring-google-blue/20 outline-none 
-                       transition-all duration-300 shadow-sm 
-                       group-hover:shadow-lg group-hover:border-gray-300
-                       dark:bg-gray-800 dark:border-gray-700 dark:text-white
-                       dark:focus:border-google-blue dark:group-hover:border-gray-600
-                       pr-14 truncate"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-              autoFocus
-            />
-            <button 
-              type="submit"
-              disabled={!query.trim()}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full
-                         hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 
-                         hover:scale-110 active:scale-95 disabled:opacity-50 disabled:hover:scale-100
-                         disabled:hover:bg-transparent z-10 bg-background dark:bg-gray-800"
-            >
-              <Search className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            </button>
-          </div>
-        </form>
+        {/* Neural Search Input */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <NeuralSearchInput onSearch={handleSearch} />
+        </motion.div>
 
-        <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400 animate-fade-in space-y-1">
-          <div>Powered by Gemini 2.0</div>
-          <div>
-            Created by <a href="http://x.com/ammaar" target="_blank" rel="noopener noreferrer" className="hover:text-gray-800 dark:hover:text-gray-300 transition-colors">@ammaar</a>
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400 space-y-2"
+        >
+          <div className="flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span>Powered by Gemini 2.0</span>
           </div>
-        </div>
+          <div>
+            Created by{' '}
+            <a 
+              href="http://x.com/ammaar" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+            >
+              @ammaar
+            </a>
+          </div>
+        </motion.div>
       </div>
+      
+      {/* Floating suggestion chips */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9 }}
+        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex flex-wrap gap-2 justify-center max-w-2xl px-4"
+      >
+        {[
+          "What is quantum computing?",
+          "Explain AI like I'm five",
+          "Latest in space exploration",
+          "How does blockchain work?"
+        ].map((suggestion, index) => (
+          <motion.button
+            key={suggestion}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1 + index * 0.1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSearch(suggestion)}
+            className="px-4 py-2 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-md
+                     border border-white/20 dark:border-white/10 text-sm
+                     hover:bg-white/20 dark:hover:bg-black/30 transition-all duration-300
+                     text-gray-700 dark:text-gray-300"
+          >
+            {suggestion}
+          </motion.button>
+        ))}
+      </motion.div>
     </div>
   );
 }

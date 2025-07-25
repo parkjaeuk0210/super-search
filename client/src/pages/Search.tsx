@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { SearchInput } from '@/components/SearchInput';
-import { SearchResults } from '@/components/SearchResults';
-import { FollowUpInput } from '@/components/FollowUpInput';
+import { NeuralSearchInput } from '@/components/NeuralSearchInput';
+import { NeuralSearchResults } from '@/components/NeuralSearchResults';
+import { NeuralFollowUpInput } from '@/components/NeuralFollowUpInput';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SourceList } from '@/components/SourceList';
+import { NeuralBackground } from '@/components/NeuralBackground';
 
 export function Search() {
   const [location, setLocation] = useLocation();
@@ -135,19 +135,23 @@ export function Search() {
   const displayResults = currentResults || data;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="min-h-screen bg-background"
-    >
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Neural Background */}
+      <NeuralBackground />
+      
       <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="max-w-6xl mx-auto p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="relative z-10"
       >
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="max-w-6xl mx-auto p-4"
+        >
         <motion.div 
           className="flex items-center gap-4 mb-6"
           initial={{ x: -20, opacity: 0 }}
@@ -164,7 +168,7 @@ export function Search() {
           </Button>
 
           <div className="w-full max-w-2xl">
-            <SearchInput
+            <NeuralSearchInput
               onSearch={handleSearch}
               initialValue={searchQuery}
               isLoading={isLoading}
@@ -183,7 +187,7 @@ export function Search() {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-stretch"
           >
-            <SearchResults
+            <NeuralSearchResults
               query={isFollowUp ? (followUpQuery || '') : searchQuery}
               results={displayResults}
               isLoading={isLoading || followUpMutation.isPending}
@@ -199,7 +203,7 @@ export function Search() {
                 transition={{ duration: 0.3, delay: 0.2 }}
                 className="mt-6 max-w-2xl"
               >
-                <FollowUpInput
+                <NeuralFollowUpInput
                   onSubmit={handleFollowUp}
                   isLoading={followUpMutation.isPending}
                 />
@@ -209,5 +213,6 @@ export function Search() {
         </AnimatePresence>
       </motion.div>
     </motion.div>
+    </div>
   );
 }
